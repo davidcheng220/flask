@@ -60,6 +60,7 @@ def wobuzhidao():
 # [POST] url/hello_post form_data = {"username": "David"}
 @app.route("/hello_post", methods=["GET","POST"])
 def hello_post():
+    username = ""
     form_html = """
     <form method="post" action="/hello_post">
         <label for="username">Username:</label>
