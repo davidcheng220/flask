@@ -1,7 +1,7 @@
-from flask import Flask
+from flask import Flask, request
+from utils import testfun
 
 app = Flask(__name__)
-app.debug = True
 
 # url
 @app.route("/")
@@ -20,8 +20,9 @@ def name(username):
     # return output_html
 
 #[GET] url/api/v2/department/dep_id/<dep_id>/emp_id/<emp_id> 
-@app.route("/api/v2/department/dep_id/<dep_id>/emp_id/<emp_id>")
-def get_employee(dep_id, emp_id):
+# setting up for string
+@app.route("/api/v2/department/dep_id/<string:dep_id>/emp_id/<int:emp_id>")
+def get_employee(dep_id: str, emp_id: int):
     query_sql = """
     SELECT 
         emp_name,
@@ -30,16 +31,62 @@ def get_employee(dep_id, emp_id):
     FROM emp
     WHERE emp_id = '{emp_id}' and dep_id = '{dep_id}'
     """
+    # print(type(dep_id))
+    # print(type(emp_id))
     # db.connect=query_sql
     return {
         "emp_name": "Daivd Cheng",
         "emp_id": "123",
         "emp_seat": "A9"
     }
+
+# import request
 # [GET] url/hello?username=David&age=22
+@app.route("/wobuzhidao")
+def wobuzhidao():
+    username = request.args.get("username")
+    age = request.args.get("age")
+    
+    # if username is None:
+    #     return f"what is your name"
+    if not username:
+        return "What is your name?"
+    if not age:
+        return "What is you age?"
+    return f"Hello, {username}, age is {age}"
+
 
 
 # [POST] url/hello_post form_data = {"username": "David"}
+@app.route("/hello_post", methods=["GET","POST"])
+def hello_post():
+    form_html = """
+    <form method="post" action="/hello_post">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username">
+        <input type="submit" value="Submit">
+    </form>
+    """
+    # get request methods 
+    request_method = request.method
+    print(request_method)
+    # get form element named username
+    username = request.form.get("username")
 
+    if request_method == "POST":
+        form_html += f"""
+        <h1>
+            Hello, {username} 
+        </h1>
+        """ 
+    return form_html
+
+# url/two_sum/<int:x>/<int:y>
+@app.route("/two_sum/<int:x>/<int:y>")
+def two_sum(x: int, y: int):
+    return str(testfun(x,y))
+
+# open internal access
 if __name__ == "__main__":
-    app.run()
+    # add debug mode
+    app.run(debug=True, host="0.0.0.0", port=5000)
