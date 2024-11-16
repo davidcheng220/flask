@@ -1,5 +1,6 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from utils import testfun
+import model
 
 app = Flask(__name__)
 
@@ -8,7 +9,7 @@ app = Flask(__name__)
 def home():
     return "<h1>hello</h1>"
 
-# url/<username>  example url/David url/Ted
+# url/<username>  example url/David or url/Ted
 @app.route("/<username>")
 def name(username):
     return f"Hello {username}"
@@ -86,6 +87,25 @@ def hello_post():
 @app.route("/two_sum/<int:x>/<int:y>")
 def two_sum(x: int, y: int):
     return str(testfun(x,y))
+
+@app.route('/hello_post2', methods=['GET', 'POST'])
+def hello_post2():
+    if request.method == 'GET':
+        return render_template('hello_post.html')
+    elif request.method == 'POST':
+        username = request.form.get('username')
+        return render_template('hello_post.html',
+                               username=username,
+                               request_method='post')
+
+# get staff form sql and label data in board
+@app.route('/show_staff')
+def hello_google():
+    staff_data = model.getStaff()
+    column = ['ID', 'Name', 'DeptId', 'Age', 'Gender', 'Salary']
+    return render_template('show_staff.html', staff_data=staff_data,
+                                              column=column)
+
 
 # open internal access
 if __name__ == "__main__":
