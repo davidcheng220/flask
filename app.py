@@ -19,7 +19,25 @@ def name(username):
     # """
     # return output_html
 
+#[GET] url/api/v2/department/dep_id/<dep_id>/emp_id/<emp_id> 
+@app.route("/api/v2/department/dep_id/<dep_id>/emp_id/<emp_id>")
+def get_employee(dep_id, emp_id):
+    query_sql = """
+    SELECT 
+        emp_name,
+        emp_id,
+        emp_seat
+    FROM emp
+    WHERE emp_id = '{emp_id}' and dep_id = '{dep_id}'
+    """
+    # db.connect=query_sql
+    return {
+        "emp_name": "Daivd Cheng",
+        "emp_id": "123",
+        "emp_seat": "A9"
+    }
 # [GET] url/hello?username=David&age=22
+
 
 # [POST] url/hello_post form_data = {"username": "David"}
 
